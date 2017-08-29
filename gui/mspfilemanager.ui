@@ -158,7 +158,6 @@
       <property name="title">
        <string>MS/MS Spectra view</string>
       </property>
-      <zorder>checkBox</zorder>
      </widget>
     </item>
     <item row="2" column="1">
@@ -205,6 +204,10 @@
     </property>
     <addaction name="actionFind_MS_MS_spectra"/>
     <addaction name="actionFind_similar_spectra"/>
+    <addaction name="separator"/>
+    <addaction name="actionCompare_two_spectra"/>
+    <addaction name="actionCompare_all_spectra"/>
+    <addaction name="separator"/>
     <addaction name="actionClean_MS_MS_spectra"/>
    </widget>
    <addaction name="menuFile"/>
@@ -250,6 +253,16 @@
   <action name="actionQuit_2">
    <property name="text">
     <string>Quit</string>
+   </property>
+  </action>
+  <action name="actionCompare_two_spectra">
+   <property name="text">
+    <string>Compare two spectra</string>
+   </property>
+  </action>
+  <action name="actionCompare_all_spectra">
+   <property name="text">
+    <string>Compare all spectra</string>
    </property>
   </action>
  </widget>

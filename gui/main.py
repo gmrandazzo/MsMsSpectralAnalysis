@@ -9,6 +9,7 @@ Geneve August 2017
 
 import os
 import sys
+from pathlib import Path
 
 path = None
 try:
@@ -83,11 +84,13 @@ class MainWindow(QtWidgets.QMainWindow, mw.Ui_MainWindow):
 
     def open(self):
         fname, _ = QtWidgets.QFileDialog.getOpenFileName(self, 'Open file')
-        del self.compoundlst[:]
-        self.lstdatamodel.clear()
-        self.compoundlst = readMSP(fname)
-        for i in range(len(self.compoundlst)):
-            self.lstdatamodel.appendRow(QtGui.QStandardItem(self.compoundlst[i].name))
+        my_file = Path(fname)
+        if my_file.is_file():
+            del self.compoundlst[:]
+            self.lstdatamodel.clear()
+            self.compoundlst = readMSP(fname)
+            for i in range(len(self.compoundlst)):
+                self.lstdatamodel.appendRow(QtGui.QStandardItem(self.compoundlst[i].name))
 
     def saveas(self):
         fname, _ = QtWidgets.QFileDialog.getSaveFileName(self, 'Save file as')
