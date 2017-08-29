@@ -94,24 +94,9 @@ class MainWindow(QtWidgets.QMainWindow, mw.Ui_MainWindow):
 
     def saveas(self):
         fname, _ = QtWidgets.QFileDialog.getSaveFileName(self, 'Save file as')
-        fo = open(fname, "w")
         for i in range(len(self.compoundlst)):
             m = self.compoundlst[i]
-            fo.write("NAME: %s\n" % (m.name))
-            fo.write("PRECURSORMZ: %s\n" % (m.precmz))
-            fo.write("PRECURSORTYPE: %s\n" % (m.prectype))
-            fo.write("INSTRUMENTTYPE: %s\n" % (m.insttype))
-            fo.write("INSTRUMENT: %s\n" % (m.inst))
-            fo.write("COLLISIONENERGY: %s\n" % (m.collenergy))
-            fo.write("SMILES: %s\n" % (m.smiles))
-            fo.write("RETENTIONTIME: %s\n" % (m.tr))
-            fo.write("IONMODE: %s\n" % (m.ionmode))
-            fo.write("Links: %s\n" % (m.links))
-            fo.write("Num Peaks: %d\n" % (m.spectra.signal_size()))
-            for j in range(m.spectra.signal_size()):
-                fo.write("%.4f\t%.4f\n" % (m.spectra.mass[j], m.spectra.intensity[j]))
-            fo.write("\n")
-        fo.close()
+            writeMSP(fname, m)
 
     def openTableMenu(self, position):
         """ context menu event """
@@ -167,7 +152,7 @@ class MainWindow(QtWidgets.QMainWindow, mw.Ui_MainWindow):
     def add(self):
         idialog = CompoundSpectraDialog()
         if idialog.exec_() == 1:
-            [name, precursormz, precursortype, inst_type, inst, ionmode, colenergy, tr, smiles ,links, txtspectra] = idialog.getdata()
+            [name, smiles, precmz, prectype, ionmode, tr, inst, insttype, collenergy, biosource, links, txtspectra] = idialog.getdata()
             #convert spectra to float and order by m/z
             spectra = MSMSspectra()
             for line in txtspectra:
@@ -176,7 +161,7 @@ class MainWindow(QtWidgets.QMainWindow, mw.Ui_MainWindow):
                     spectra.mass.append(float(a[0]))
                     spectra.intensity.append(float(a[1]))
             spectra.sortMZ()
-            self.compoundlst.append(Compound(name, smiles, precursormz,ionmode, tr, precursortype,inst,inst_type, colenergy, spectra, links))
+            self.compoundlst.append(Compound(name, smiles, precmz, ionmode, tr, prectype, inst, insttype, collenergy, biosource, links, spectra))
             self.lstdatamodel.appendRow(QtGui.QStandardItem(name))
 
     def edit(self):
@@ -184,7 +169,7 @@ class MainWindow(QtWidgets.QMainWindow, mw.Ui_MainWindow):
         idialog = CompoundSpectraDialog()
         idialog.setdata(self.compoundlst[indx].name, self.compoundlst[indx].smiles, self.compoundlst[indx].precmz, self.compoundlst[indx].prectype, self.compoundlst[indx].inst, self.compoundlst[indx].insttype, self.compoundlst[indx].ionmode, self.compoundlst[indx].collenergy, self.compoundlst[indx].tr,  self.compoundlst[indx].spectra.totxt(), self.compoundlst[indx].links)
         if idialog.exec_() == 1:
-            [name, precursormz, precursortype, inst_type, inst, ionmode, colenergy, tr, smiles ,links, txtspectra] = idialog.getdata()
+            [name, smiles, precmz, prectype, ionmode, tr, inst, insttype, collenergy, biosource, links, txtspectra] = idialog.getdata()
             spectra = MSMSspectra()
             for line in str.split(txtspectra, "\n"):
                 a = nsplit(line.strip(), "\t")
@@ -203,6 +188,7 @@ class MainWindow(QtWidgets.QMainWindow, mw.Ui_MainWindow):
             self.compoundlst[indx].spectra = spectra
             self.compoundlst[indx].tr = tr
             self.compoundlst[indx].ionmode = ionmode
+            self.compoundlst[indx].biosource = biosource
             self.compoundlst[indx].links = links
 
     def remove(self):

@@ -17,12 +17,25 @@
    <layout class="QGridLayout" name="gridLayout_4">
     <item row="0" column="0" rowspan="3">
      <widget class="QGroupBox" name="groupBox">
+      <property name="maximumSize">
+       <size>
+        <width>350</width>
+        <height>712</height>
+       </size>
+      </property>
       <property name="title">
        <string>MS/MS spectra list</string>
       </property>
       <layout class="QGridLayout" name="gridLayout">
        <item row="0" column="0" colspan="5">
-        <widget class="QListView" name="listView"/>
+        <widget class="QListView" name="listView">
+         <property name="maximumSize">
+          <size>
+           <width>310</width>
+           <height>600</height>
+          </size>
+         </property>
+        </widget>
        </item>
        <item row="1" column="0">
         <spacer name="horizontalSpacer">

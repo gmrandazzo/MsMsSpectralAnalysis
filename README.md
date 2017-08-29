@@ -1,9 +1,25 @@
 # MsMsSpectralAnalysis
 
-Create/Edit/Modify/Analyze MSP file.
+Create/Edit/Modify/Analyze MSP and MGF files.
 
 
 ![ScreenShot](https://github.com/gmrandazzo/MsMsSpectralAnalysis/blob/master/mspfm.png)
+
+
+Standard fields
+===============
+MGF and MSP files are standardised according these fields:
+
+Name: compound name
+SMILES: molecular structure
+PRECURSORMZ: m/z precursor ion
+INSTRUMENT: instrumental brand (Waters Xevo, Thermo Orbitrap, etc..)
+INSTRUMENTTYPE: type of the instrument (ESI-LC-MS etc..)
+COLLISIONENERGY: energy of collision with fragmentation type (CID 20, HCD 30 etc..)
+RETENTIONTIME: retention time (min)
+IONMODE: positive or negative
+BIOLOGICALSOURCE: human blood, rat urine, cell H295R, plant Plectranthus barbatus, etc...
+LINKS: CAS number, HMDB ID, LipidMaps ID etc..
 
 
 License
@@ -37,4 +53,8 @@ The required dependencies to use PyLSS are:
 
 
 
+Developper
+=========
+
+MsMsSpectralAnalysis is written and mantained by Giuseppe Marco Randazzo <gmrandazzo@gmail.com>
 

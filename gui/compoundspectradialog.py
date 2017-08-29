@@ -27,7 +27,7 @@ class CompoundSpectraDialog(QtWidgets.QDialog, Ui_CompoundSpectraDialog):
     def ok_(self):
         self.accept()
 
-    def setdata(self, name, smiles, precursormz, precursortype, inst, inst_type, ionmode, colenergy, tr, spectra, links):
+    def setdata(name, smiles, precmz, prectype, ionmode, tr, inst, insttype, collenergy, biosource, links, spectra):
         self.lineEdit.setText(name)
         self.lineEdit_2.setText(precursormz)
         self.lineEdit_3.setText(precursortype)
@@ -37,6 +37,7 @@ class CompoundSpectraDialog(QtWidgets.QDialog, Ui_CompoundSpectraDialog):
         self.lineEdit_7.setText(colenergy)
         self.lineEdit_8.setText(tr)
         self.lineEdit_6.setText(smiles)
+        self.lineEdit_11.setText(biosource)
         self.lineEdit_10.setText(links)
         self.textEdit.setText(spectra)
 
@@ -50,6 +51,7 @@ class CompoundSpectraDialog(QtWidgets.QDialog, Ui_CompoundSpectraDialog):
         colenergy = self.lineEdit_7.text()
         tr = self.lineEdit_8.text()
         smiles = self.lineEdit_6.text()
+        biosource = self.lineEdit_11.text()
         links = self.lineEdit_10.text()
-        spectra = self.textEdit.toPlainText()
-        return [name, precursormz, precursortype, inst_type, inst, ionmode, colenergy, tr, smiles ,links, spectra]
+        txtspectra = self.textEdit.toPlainText()
+        return [name, smiles, precmz, prectype, ionmode, tr, inst, insttype, collenergy, biosource, links, txtspectra]

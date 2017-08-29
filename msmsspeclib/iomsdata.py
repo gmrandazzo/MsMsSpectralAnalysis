@@ -8,15 +8,9 @@ Geneve August 2017
 '''
 
 class Compound(object):
-    def __init__(self, name, smiles, precmz, ionmode, tr, prectype, inst, insttype, collenergy, spectra, links):
+    def __init__(self, name, smiles, precmz, prectype, ionmode, tr, inst, insttype, collenergy, biosource, links, spectra):
         self.name = name
         self.smiles = smiles
-        self.inchiKey = ""
-        try:
-            self.inchiKey = ""
-        except:
-            print("Error while computing inchi key")
-
         self.precmz = precmz
         self.prectype = prectype
         self.inst = inst
@@ -26,6 +20,7 @@ class Compound(object):
         self.tr = tr
         self.ionmode = ionmode
         self.links = links
+        self.biosource = biosource
 
     def debug(self):
         print("Name: %s" % (self.name))
@@ -165,8 +160,7 @@ def readOrbitrapSpectra(fname):
                 continue
 
     fi.close()
-
-    return Compound(name, "None", "None", "None", "None", "None", "None", "None", "None", spectra, "None")
+    return Compound(name, "None", "None", "None", "None", "None", "None", "None", "None", "None", "None", spectra)
 
 def readMoNaCSV(fname):
         """Read MoNa csv database extracted with MoNaJSON2CSV.py"""
@@ -193,7 +187,7 @@ def readMoNaCSV(fname):
                 a = nsplit(sig, ":")
                 spectra.mass.append(float(a[0].replace(",",".")))
                 spectra.intensity.append(float(a[1].replace(",",".")))
-            compounds.append(Compound(name, smiles, precmz, "None", "None", prectype, "None", insttype, collenergy, spectra, "None"))
+            compounds.append(Compound(name, smiles, precmz, prectype, "None", "None", "None", insttype, collenergy, "None", "None", spectra))
         fi.close()
 
         return compounds
@@ -210,6 +204,7 @@ def readMSP(fname):
         inst = "None"
         collenergy = "None"
         tr = "None"
+        biosource = "None"
         links = "None"
         spectra = MSMSspectra()
         getspectra = False
@@ -217,7 +212,7 @@ def readMSP(fname):
         for line in fi:
             if "name" in line.lower():
                 if getspectra == True:
-                    compounds.append(Compound(name, smiles, precmz, ionmode, tr, prectype, inst, insttype, collenergy, spectra, links))
+                    compounds.append(Compound(name, smiles, precmz, prectype, ionmode, tr, inst, insttype, collenergy, biosource, links, spectra))
                     spectra = MSMSspectra()
                     getspectra = False
                 name = nsplit(line.strip(), ":")[-1].strip()
@@ -253,6 +248,105 @@ def readMSP(fname):
                         continue
                 else:
                     continue
+        compounds.append(Compound(name, smiles, precmz, ionmode, tr, prectype, inst, insttype, collenergy, biosource, links, spectra))
+        fi.close()
+        return compounds
+
+def writeMSP(fname, compound):
+    fo = open(fname, "a")
+    fo.write("NAME: %s\n" % (compound.name))
+    fo.write("PRECURSORMZ: %s\n" % (compound.precmz))
+    fo.write("PRECURSORTYPE: %s\n" % (compound.prectype))
+    fo.write("INSTRUMENTTYPE: %s\n" % (compound.insttype))
+    fo.write("INSTRUMENT: %s\n" % (compound.inst))
+    fo.write("COLLISIONENERGY: %s\n" % (compound.collenergy))
+    fo.write("SMILES: %s\n" % (compound.smiles))
+    fo.write("RETENTIONTIME: %s\n" % (compound.tr))
+    fo.write("IONMODE: %s\n" % (compound.ionmode))
+    fo.write("BIOLOGICALSOURCE: %s\n" % (compound.biosource))
+    fo.write("Links: %s\n" % (compound.links))
+    fo.write("Num Peaks: %d\n" % (compound.spectra.signal_size()))
+    for j in range(compound.spectra.signal_size()):
+        fo.write("%.4f\t%.4f\n" % (compound.spectra.mass[j], compound.spectra.intensity[j]))
+    fo.write("\n")
+    fo.close()
+
+def readMGF(fname):
+        """Read MGF file type """
+        compounds = []
+        name = "None"
+        smiles = "None"
+        precmz = "None"
+        prectype = "None"
+        ionmode = "None"
+        insttype = "None"
+        inst = "None"
+        collenergy = "None"
+        tr = "None"
+        biosource = "None"
+        links = "None"
+        spectra = MSMSspectra()
+        getspectra = False
+        fi = open(fname, "r")
+        for line in fi:
+            if "end ions" in line.lower():
+                compounds.append(Compound(name, smiles, precmz, prectype, ionmode, tr, inst, insttype, collenergy, biosource, links, spectra))
+                spectra = MSMSspectra()
+            elif "begin ions" in line.lower():
+                continue
+            if "name" in line.lower():
+                name = nsplit(line.strip(), "=")[-1].strip()
+            elif "precursormz" in line.lower():
+                precmz = nsplit(line.strip(), "=")[-1].strip()
+            elif "precursortype" in line.lower():
+                prectype = nsplit(line.strip(), "=")[-1].strip()
+            elif "instrumenttype" in line.lower():
+                insttype = nsplit(line.strip(), "=")[-1].strip()
+            elif "instrument" in line.lower():
+                inst = nsplit(line.strip(), "=")[-1].strip()
+            elif "smiles" in line.lower():
+                smiles = nsplit(line.strip(), "=")[-1].strip()
+            elif "collisionenergy" in line.lower():
+                collenergy = nsplit(line.strip(), "=")[-1].strip()
+            elif "retentiontime" in line.lower():
+                tr = nsplit(line.strip(), "=")[-1].strip()
+            elif "ionmode" in line.lower():
+                ionmode = nsplit(line.strip(), "=")[-1].strip()
+            elif "ionmode" in line.lower():
+                ionmode = nsplit(line.strip(), "=")[-1].strip()
+            elif "links" in line.lower():
+                links = nsplit(line.strip(), "=")[-1].strip()
+            elif "num peaks" in line.lower():
+                getspectra = True
+            else:
+                if getspectra == True:
+                    a = nsplit(line.strip(), "\t")
+                    if len(a) == 2:
+                        spectra.mass.append(float(a[0].replace(",",".")))
+                        spectra.intensity.append(float(a[1].replace(",",".")))
+                    else:
+                        continue
+                else:
+                    continue
         fi.close()
 
         return compounds
+
+def writeMGF(fname, compound):
+    fo = open(fname, "a")
+    fo.write("BEGIN IONS\n")
+    fo.write("NAME=%s\n" % (compound.name))
+    fo.write("PRECURSORMZ=%s\n" % (compound.precmz))
+    fo.write("PRECURSORTYPE=%s\n" % (compound.prectype))
+    fo.write("INSTRUMENTTYPE=%s\n" % (compound.insttype))
+    fo.write("INSTRUMENT=%s\n" % (compound.inst))
+    fo.write("COLLISIONENERGY=%s\n" % (compound.collenergy))
+    fo.write("SMILES=%s\n" % (compound.smiles))
+    fo.write("RETENTIONTIME=%s\n" % (compound.tr))
+    fo.write("IONMODE=%s\n" % (compound.ionmode))
+    fo.write("BIOLOGICALSOURCE=%s\n" % (compound.biosource))
+    fo.write("LINKS=%s\n" % (compound.links))
+    for j in range(compound.spectra.signal_size()):
+        fo.write("%.4f\t%.4f\n" % (compound.spectra.mass[j], compound.spectra.intensity[j]))
+    fo.write("END IONS\n")
+    fo.close()
