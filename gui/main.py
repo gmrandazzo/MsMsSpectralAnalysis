@@ -83,20 +83,38 @@ class MainWindow(QtWidgets.QMainWindow, mw.Ui_MainWindow):
         self.toolbar.pan()
 
     def open(self):
-        fname, _ = QtWidgets.QFileDialog.getOpenFileName(self, 'Open file')
+        fname, _ = QtWidgets.QFileDialog.getOpenFileName(self, self.tr('Open file'), str(Path.home()), self.tr("files (*.mgf *.msp)"))
         my_file = Path(fname)
         if my_file.is_file():
             del self.compoundlst[:]
             self.lstdatamodel.clear()
-            self.compoundlst = readMSP(fname)
-            for i in range(len(self.compoundlst)):
-                self.lstdatamodel.appendRow(QtGui.QStandardItem(self.compoundlst[i].name))
+            filename, file_extension = os.path.splitext(fname)
+            if file_extension.lower() == ".msp":
+                self.compoundlst = readMSP(fname)
+            elif file_extension.lower() == ".mgf":
+                self.compoundlst = readMGF(fname)
+            else:
+                return
+
+            if len(self.compoundlst) > 0:
+                for i in range(len(self.compoundlst)):
+                    self.lstdatamodel.appendRow(QtGui.QStandardItem(self.compoundlst[i].name))
 
     def saveas(self):
-        fname, _ = QtWidgets.QFileDialog.getSaveFileName(self, 'Save file as')
-        for i in range(len(self.compoundlst)):
-            m = self.compoundlst[i]
-            writeMSP(fname, m)
+        fname, _ = QtWidgets.QFileDialog.getSaveFileName(self, self.tr('Save file as'), str(Path.home()), self.tr("files (*.mgf *.msp)"))
+        if len(fname) > 0:
+            filename, file_extension = os.path.splitext(fname)
+            writefnc = None
+            if file_extension.lower() == ".msp":
+                writefnc = writeMSP
+            elif file_extension.lower() == ".mgf":
+                writefnc = writeMGF
+            else:
+                return
+            
+            for i in range(len(self.compoundlst)):
+                m = self.compoundlst[i]
+                writefnc(fname, m)
 
     def openTableMenu(self, position):
         """ context menu event """
@@ -253,6 +271,7 @@ class MainWindow(QtWidgets.QMainWindow, mw.Ui_MainWindow):
         self.tablemodel.addRow(["COLLISIONENERGY", m.collenergy])
         self.tablemodel.addRow(["RETENTIONTIME", m.tr])
         self.tablemodel.addRow(["IONMODE", m.ionmode])
+        self.tablemodel.addRow(["BIOLOGICALSOURCE", m.biosource])
         self.tablemodel.addRow(["Links", m.links])
         self.tablemodel.addRow(["Num Peaks", m.spectra.signal_size()])
         return

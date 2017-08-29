@@ -195,17 +195,17 @@ def readMoNaCSV(fname):
 def readMSP(fname):
         """Read MSP file type """
         compounds = []
-        name = "None"
-        smiles = "None"
-        precmz = "None"
-        prectype = "None"
-        ionmode = "None"
-        insttype = "None"
-        inst = "None"
-        collenergy = "None"
-        tr = "None"
-        biosource = "None"
-        links = "None"
+        name = "N/A"
+        smiles = "N/A"
+        precmz = "N/A"
+        prectype = "N/A"
+        ionmode = "N/A"
+        insttype = "N/A"
+        inst = "N/A"
+        collenergy = "N/A"
+        tr = "N/A"
+        biosource = "N/A"
+        links = "N/A"
         spectra = MSMSspectra()
         getspectra = False
         fi = open(fname, "r")
@@ -274,27 +274,36 @@ def writeMSP(fname, compound):
 def readMGF(fname):
         """Read MGF file type """
         compounds = []
-        name = "None"
-        smiles = "None"
-        precmz = "None"
-        prectype = "None"
-        ionmode = "None"
-        insttype = "None"
-        inst = "None"
-        collenergy = "None"
-        tr = "None"
-        biosource = "None"
-        links = "None"
-        spectra = MSMSspectra()
-        getspectra = False
+        name = "N/A"
+        smiles = "N/A"
+        precmz = "N/A"
+        prectype = "N/A"
+        ionmode = "N/A"
+        insttype = "N/A"
+        inst = "N/A"
+        collenergy = "N/A"
+        tr = "N/A"
+        biosource = "N/A"
+        links = "N/A"
+        spectra = None
         fi = open(fname, "r")
         for line in fi:
-            if "end ions" in line.lower():
+            if "end" in line.lower():
                 compounds.append(Compound(name, smiles, precmz, prectype, ionmode, tr, inst, insttype, collenergy, biosource, links, spectra))
-                spectra = MSMSspectra()
             elif "begin ions" in line.lower():
-                continue
-            if "name" in line.lower():
+                name = "N/A"
+                smiles = "N/A"
+                precmz = "N/A"
+                prectype = "N/A"
+                ionmode = "N/A"
+                insttype = "N/A"
+                inst = "N/A"
+                collenergy = "N/A"
+                tr = "N/A"
+                biosource = "N/A"
+                links = "N/A"
+                spectra = MSMSspectra()
+            elif "name" in line.lower():
                 name = nsplit(line.strip(), "=")[-1].strip()
             elif "precursormz" in line.lower():
                 precmz = nsplit(line.strip(), "=")[-1].strip()
@@ -316,18 +325,14 @@ def readMGF(fname):
                 ionmode = nsplit(line.strip(), "=")[-1].strip()
             elif "links" in line.lower():
                 links = nsplit(line.strip(), "=")[-1].strip()
-            elif "num peaks" in line.lower():
-                getspectra = True
             else:
-                if getspectra == True:
-                    a = nsplit(line.strip(), "\t")
-                    if len(a) == 2:
-                        spectra.mass.append(float(a[0].replace(",",".")))
-                        spectra.intensity.append(float(a[1].replace(",",".")))
-                    else:
-                        continue
+                a = nsplit(line.strip(), " ")
+                if len(a) == 2:
+                    spectra.mass.append(float(a[0].replace(",",".")))
+                    spectra.intensity.append(float(a[1].replace(",",".")))
                 else:
                     continue
+        compounds.append(Compound(name, smiles, precmz, prectype, ionmode, tr, inst, insttype, collenergy, biosource, links, spectra))
         fi.close()
 
         return compounds
@@ -347,6 +352,6 @@ def writeMGF(fname, compound):
     fo.write("BIOLOGICALSOURCE=%s\n" % (compound.biosource))
     fo.write("LINKS=%s\n" % (compound.links))
     for j in range(compound.spectra.signal_size()):
-        fo.write("%.4f\t%.4f\n" % (compound.spectra.mass[j], compound.spectra.intensity[j]))
+        fo.write("%.4f %.4f\n" % (compound.spectra.mass[j], compound.spectra.intensity[j]))
     fo.write("END IONS\n")
     fo.close()
