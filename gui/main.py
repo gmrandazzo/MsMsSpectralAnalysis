@@ -111,7 +111,7 @@ class MainWindow(QtWidgets.QMainWindow, mw.Ui_MainWindow):
                 writefnc = writeMGF
             else:
                 return
-            
+
             for i in range(len(self.compoundlst)):
                 m = self.compoundlst[i]
                 writefnc(fname, m)
@@ -185,7 +185,7 @@ class MainWindow(QtWidgets.QMainWindow, mw.Ui_MainWindow):
     def edit(self):
         indx = self.listView.currentIndex().row()
         idialog = CompoundSpectraDialog()
-        idialog.setdata(self.compoundlst[indx].name, self.compoundlst[indx].smiles, self.compoundlst[indx].precmz, self.compoundlst[indx].prectype, self.compoundlst[indx].inst, self.compoundlst[indx].insttype, self.compoundlst[indx].ionmode, self.compoundlst[indx].collenergy, self.compoundlst[indx].tr,  self.compoundlst[indx].spectra.totxt(), self.compoundlst[indx].links)
+        idialog.setdata(self.compoundlst[indx].name, self.compoundlst[indx].smiles, self.compoundlst[indx].precmz, self.compoundlst[indx].prectype, self.compoundlst[indx].ionmode,  self.compoundlst[indx].tr, self.compoundlst[indx].inst, self.compoundlst[indx].insttype,  self.compoundlst[indx].collenergy,  self.compoundlst[indx].biosource, self.compoundlst[indx].links, self.compoundlst[indx].spectra.totxt())
         if idialog.exec_() == 1:
             [name, smiles, precmz, prectype, ionmode, tr, inst, insttype, collenergy, biosource, links, txtspectra] = idialog.getdata()
             spectra = MSMSspectra()
@@ -198,11 +198,11 @@ class MainWindow(QtWidgets.QMainWindow, mw.Ui_MainWindow):
             #update fields
             self.compoundlst[indx].name = name
             self.compoundlst[indx].smiles = smiles
-            self.compoundlst[indx].precmz = precursormz
-            self.compoundlst[indx].prectype = precursortype
+            self.compoundlst[indx].precmz = precmz
+            self.compoundlst[indx].prectype = prectype
             self.compoundlst[indx].inst = inst
-            self.compoundlst[indx].insttype = inst_type
-            self.compoundlst[indx].collenergy = colenergy
+            self.compoundlst[indx].insttype = insttype
+            self.compoundlst[indx].collenergy = collenergy
             self.compoundlst[indx].spectra = spectra
             self.compoundlst[indx].tr = tr
             self.compoundlst[indx].ionmode = ionmode
