@@ -23,6 +23,7 @@ class Ui_MainWindow(object):
         self.gridLayout.setObjectName("gridLayout")
         self.listView = QtWidgets.QListView(self.groupBox)
         self.listView.setMaximumSize(QtCore.QSize(310, 600))
+        self.listView.setEditTriggers(QtWidgets.QAbstractItemView.NoEditTriggers)
         self.listView.setObjectName("listView")
         self.gridLayout.addWidget(self.listView, 0, 0, 1, 5)
         spacerItem = QtWidgets.QSpacerItem(24, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
