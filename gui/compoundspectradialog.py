@@ -39,7 +39,7 @@ class CompoundSpectraDialog(QtWidgets.QDialog, Ui_CompoundSpectraDialog):
         self.lineEdit_6.setText(smiles)
         self.lineEdit_11.setText(biosource)
         self.lineEdit_10.setText(links)
-        self.textEdit.setText(spectra)
+        self.plainTextEdit.setText(spectra)
 
     def getdata(self):
         name = self.lineEdit.text()
@@ -53,5 +53,5 @@ class CompoundSpectraDialog(QtWidgets.QDialog, Ui_CompoundSpectraDialog):
         smiles = self.lineEdit_6.text()
         biosource = self.lineEdit_11.text()
         links = self.lineEdit_10.text()
-        txtspectra = self.textEdit.toPlainText()
+        txtspectra = str(self.plainTextEdit.toPlainText()).split('\n')
         return [name, smiles, precmz, prectype, ionmode, tr, inst, insttype, collenergy, biosource, links, txtspectra]

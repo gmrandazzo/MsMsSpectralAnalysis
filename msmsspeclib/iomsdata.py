@@ -11,7 +11,7 @@ class Compound(object):
     def __init__(self, name, smiles, precmz, prectype, ionmode, tr, inst, insttype, collenergy, biosource, links, spectra):
         self.name = name
         self.smiles = smiles
-        self.precmz = precmz
+        self.precmz = precmz.replace(",", ".")
         self.prectype = prectype
         self.inst = inst
         self.insttype = insttype
@@ -91,7 +91,11 @@ def drange(start, stop, step):
 
 def nsplit(s, delim=None):
     """Split string according a delimiter and removing empty fields"""
-    return [x for x in s.split(delim) if x]
+    if delim == None:
+        import re
+        return [x for x in re.split(u'\s|\u200b', s) if x]
+    else:
+        return [x for x in s.split(delim) if x]
 
 def spectraconvert(spectra, ival=0.15):
     """ spectralconvert method

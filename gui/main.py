@@ -174,10 +174,10 @@ class MainWindow(QtWidgets.QMainWindow, mw.Ui_MainWindow):
             #convert spectra to float and order by m/z
             spectra = MSMSspectra()
             for line in txtspectra:
-                a = nsplit(line.strip(), "\t")
+                a = nsplit(line.strip())
                 if len(a) == 2:
-                    spectra.mass.append(float(a[0]))
-                    spectra.intensity.append(float(a[1]))
+                    spectra.mass.append(float(a[0].replace(",", ".")))
+                    spectra.intensity.append(float(a[1].replace(",", ".")))
             spectra.sortMZ()
             self.compoundlst.append(Compound(name, smiles, precmz, ionmode, tr, prectype, inst, insttype, collenergy, biosource, links, spectra))
             self.lstdatamodel.appendRow(QtGui.QStandardItem(name))
@@ -190,10 +190,10 @@ class MainWindow(QtWidgets.QMainWindow, mw.Ui_MainWindow):
             [name, smiles, precmz, prectype, ionmode, tr, inst, insttype, collenergy, biosource, links, txtspectra] = idialog.getdata()
             spectra = MSMSspectra()
             for line in str.split(txtspectra, "\n"):
-                a = nsplit(line.strip(), "\t")
+                a = nsplit(line.strip())
                 if len(a) == 2:
-                    spectra.mass.append(float(a[0]))
-                    spectra.intensity.append(float(a[1]))
+                    spectra.mass.append(float(a[0].replace(",", ".")))
+                    spectra.intensity.append(float(a[1].replace(",", ".")))
             spectra.sortMZ()
             #update fields
             self.compoundlst[indx].name = name
