@@ -189,7 +189,7 @@ class MainWindow(QtWidgets.QMainWindow, mw.Ui_MainWindow):
         if idialog.exec_() == 1:
             [name, smiles, precmz, prectype, ionmode, tr, inst, insttype, collenergy, biosource, links, txtspectra] = idialog.getdata()
             spectra = MSMSspectra()
-            for line in str.split(txtspectra, "\n"):
+            for line in txtspectra:
                 a = nsplit(line.strip())
                 if len(a) == 2:
                     spectra.mass.append(float(a[0].replace(",", ".")))
