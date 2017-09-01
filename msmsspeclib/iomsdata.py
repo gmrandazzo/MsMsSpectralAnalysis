@@ -292,9 +292,9 @@ def readMGF(fname):
         spectra = None
         fi = open(fname, "r")
         for line in fi:
-            if "end" in line.lower():
+            if "end ions" == line.lower().strip():
                 compounds.append(Compound(name, smiles, precmz, prectype, ionmode, tr, inst, insttype, collenergy, biosource, links, spectra))
-            elif "begin ions" in line.lower():
+            elif "begin ions" in line.lower().strip():
                 name = "N/A"
                 smiles = "N/A"
                 precmz = "N/A"
@@ -307,28 +307,30 @@ def readMGF(fname):
                 biosource = "N/A"
                 links = "N/A"
                 spectra = MSMSspectra()
-            elif "name" in line.lower():
-                name = nsplit(line.strip(), "=")[-1].strip()
-            elif "precursormz" in line.lower():
-                precmz = nsplit(line.strip(), "=")[-1].strip()
-            elif "precursortype" in line.lower():
-                prectype = nsplit(line.strip(), "=")[-1].strip()
-            elif "instrumenttype" in line.lower():
-                insttype = nsplit(line.strip(), "=")[-1].strip()
-            elif "instrument" in line.lower():
-                inst = nsplit(line.strip(), "=")[-1].strip()
-            elif "smiles" in line.lower():
-                smiles = nsplit(line.strip(), "=")[-1].strip()
-            elif "collisionenergy" in line.lower():
-                collenergy = nsplit(line.strip(), "=")[-1].strip()
-            elif "retentiontime" in line.lower():
-                tr = nsplit(line.strip(), "=")[-1].strip()
-            elif "ionmode" in line.lower():
-                ionmode = nsplit(line.strip(), "=")[-1].strip()
-            elif "ionmode" in line.lower():
-                ionmode = nsplit(line.strip(), "=")[-1].strip()
-            elif "links" in line.lower():
-                links = nsplit(line.strip(), "=")[-1].strip()
+            elif "=" in line:
+                a = nsplit(line.strip(), "=")
+                if "name" == a[0].lower().strip():
+                    name = a[-1].strip()
+                elif "precursormz" == a[0].lower().strip():
+                    precmz = a[-1].strip()
+                elif "precursortype" == a[0].lower().strip():
+                    prectype = a[-1].strip()
+                elif "instrumenttype" == a[0].lower().strip():
+                    insttype = a[-1].strip()
+                elif "instrument" == a[0].lower().strip():
+                    inst = a[-1].strip()
+                elif "smiles" == a[0].lower().strip():
+                    smiles = a[-1].strip()
+                elif "collisionenergy" == a[0].lower().strip():
+                    collenergy = a[-1].strip()
+                elif "retentiontime" == a[0].lower().strip():
+                    tr = a[-1].strip()
+                elif "ionmode" == a[0].lower().strip():
+                    ionmode = a[-1].strip()
+                elif "ionmode" == a[0].lower().strip():
+                    ionmode = a[-1].strip()
+                elif "links" == a[0].lower().strip():
+                    links = a[-1].strip()
             else:
                 a = nsplit(line.strip(), " ")
                 if len(a) == 2:
@@ -336,7 +338,6 @@ def readMGF(fname):
                     spectra.intensity.append(float(a[1].replace(",",".")))
                 else:
                     continue
-        compounds.append(Compound(name, smiles, precmz, prectype, ionmode, tr, inst, insttype, collenergy, biosource, links, spectra))
         fi.close()
 
         return compounds
