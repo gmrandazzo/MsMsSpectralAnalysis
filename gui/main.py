@@ -31,6 +31,7 @@ import matplotlib.backends.backend_tkagg
 import matplotlib.pyplot as plt
 
 import gui_mspfilemanager as mw
+from gui_aboutdialog import *
 from compoundspectradialog import *
 from msmscomparissondialog import *
 
@@ -76,6 +77,9 @@ class MainWindow(QtWidgets.QMainWindow, mw.Ui_MainWindow):
         self.actionSave_As.triggered.connect(self.saveas)
         self.actionCompare_two_spectra.triggered.connect(self.twospectracmp)
 
+        self.actionAbout.triggered.connect(self.about)
+        self.actionExit.triggered.connect(self.quit)
+
     def home(self):
         self.toolbar.home()
 
@@ -119,12 +123,13 @@ class MainWindow(QtWidgets.QMainWindow, mw.Ui_MainWindow):
                 m = self.compoundlst[i]
                 writefnc(fname, m)
 
+    def about(self):
+        adialog = AboutDialog()
+        adialog.exec_()
+
     def twospectracmp(self):
         msmscmp = MSMSComparissonDialog(self.compoundlst)
-        if msmscmp.exec_() == 1:
-            return
-        else:
-            return
+        msmscmp.exec_()
 
     def openTableMenu(self, position):
         """ context menu event """

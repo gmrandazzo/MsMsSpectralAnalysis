@@ -42,6 +42,7 @@ class MSMSComparissonDialog(QtWidgets.QDialog, Ui_MSMSComparissonDialog):
         self.lstdatamodel2 = QtGui.QStandardItemModel(self.listView_2)
         self.listView_2.setModel(self.lstdatamodel2)
         self.listView_2.selectionModel().selectionChanged.connect(self.updateSpectralView)
+        self.doubleSpinBox.valueChanged.connect(self.updateSpectralView)
 
         for i in range(len(self.compoundlst)):
             self.lstdatamodel1.appendRow(QtGui.QStandardItem(self.compoundlst[i].name))
@@ -70,26 +71,27 @@ class MSMSComparissonDialog(QtWidgets.QDialog, Ui_MSMSComparissonDialog):
             mol1 = self.compoundlst[self.listView.selectedIndexes()[0].row()]
             mol2 = self.compoundlst[self.listView_2.selectedIndexes()[0].row()]
 
-            mol1.spectra = spectraconvert(mol1.spectra, 0.01)
-            mol2.spectra = spectraconvert(mol2.spectra, 0.01)
+            filter = self.doubleSpinBox.value()/100.
+            spectra1 = spectraconvert(mol1.spectra, filter)
+            spectra2 = spectraconvert(mol2.spectra, filter)
 
             msmscmp = MSMSVectorSpace(5.0)
 
             vfp = []
-            msmscmp.FPMassVector(vfp, mol1.spectra)
-            msmscmp.FPMassVector(vfp, mol2.spectra)
+            msmscmp.FPMassVector(vfp, spectra1)
+            msmscmp.FPMassVector(vfp, spectra2)
             vfp.sort()
 
-            fp1 = msmscmp.genGlobalMSMSFingerprint(vfp, mol1.spectra)
-            fp2 = msmscmp.genGlobalMSMSFingerprint(vfp, mol2.spectra)
+            fp1 = msmscmp.genGlobalMSMSFingerprint(vfp, spectra1)
+            fp2 = msmscmp.genGlobalMSMSFingerprint(vfp, spectra2)
 
             similarity = msmscmp.cosine_similarity(fp1, fp2)
 
             self.label.setText("Spectral similarity: %.2f" % (similarity))
-            
+
             #width = 0.30       # the width of the bars
-            width1 = 2*pow(mol1.spectra.getIntensityMax(), -0.05)
-            width2 = 2*pow(mol2.spectra.getIntensityMax(), -0.05)
+            width1 = 2*pow(spectra1.getIntensityMax(), -0.05)
+            width2 = 2*pow(spectra2.getIntensityMax(), -0.05)
 
             width = 0.3
             if width1 > width2:
@@ -100,11 +102,11 @@ class MSMSComparissonDialog(QtWidgets.QDialog, Ui_MSMSComparissonDialog):
             ax = self.figure.add_subplot(111)
             ax.clear()
 
-            rects1 = ax.bar(mol1.spectra.mass, mol1.spectra.intensity, width, color='r')
-            for i in range(mol2.spectra.signal_size()):
-                mol2.spectra.intensity[i] *= -1
+            rects1 = ax.bar(spectra1.mass, spectra1.intensity, width, color='r')
+            for i in range(spectra2.signal_size()):
+                spectra2.intensity[i] *= -1
 
-            rects2 = ax.bar(mol2.spectra.mass, mol2.spectra.intensity, width, color='g')
+            rects2 = ax.bar(spectra2.mass, spectra2.intensity, width, color='g')
             ax.set_ylabel('intensity')
             #ax.legend( (rects1[0], rects2[0], rects3[0]), ('y', 'z', 'k') )
 

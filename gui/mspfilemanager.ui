@@ -20,7 +20,7 @@
       <property name="maximumSize">
        <size>
         <width>350</width>
-        <height>712</height>
+        <height>16777215</height>
        </size>
       </property>
       <property name="title">
@@ -198,8 +198,7 @@
     </property>
     <addaction name="actionOpen"/>
     <addaction name="actionSave_As"/>
-    <addaction name="separator"/>
-    <addaction name="actionQuit_2"/>
+    <addaction name="actionExit"/>
    </widget>
    <widget class="QMenu" name="menuHelp">
     <property name="title">
@@ -211,12 +210,13 @@
     <property name="title">
      <string>Tools</string>
     </property>
-    <addaction name="actionFind_MS_MS_spectra"/>
     <addaction name="actionFind_similar_spectra"/>
+    <addaction name="actionExtract_by_header"/>
     <addaction name="separator"/>
     <addaction name="actionCompare_two_spectra"/>
     <addaction name="actionCompare_all_spectra"/>
     <addaction name="separator"/>
+    <addaction name="actionNormalize_all_spectra"/>
     <addaction name="actionClean_MS_MS_spectra"/>
    </widget>
    <addaction name="menuFile"/>
@@ -256,12 +256,12 @@
   </action>
   <action name="actionClean_MS_MS_spectra">
    <property name="text">
-    <string>Clean spectra</string>
+    <string>Clean all spectra</string>
    </property>
   </action>
-  <action name="actionQuit_2">
+  <action name="actionExit">
    <property name="text">
-    <string>Quit</string>
+    <string>Exit</string>
    </property>
   </action>
   <action name="actionCompare_two_spectra">
@@ -272,6 +272,21 @@
   <action name="actionCompare_all_spectra">
    <property name="text">
     <string>Compare all spectra</string>
+   </property>
+  </action>
+  <action name="actionNormalize_all_spectra">
+   <property name="text">
+    <string>Normalize all spectra</string>
+   </property>
+  </action>
+  <action name="actionExtract_by_header">
+   <property name="text">
+    <string>Extract by header</string>
+   </property>
+  </action>
+  <action name="actionOloturia">
+   <property name="text">
+    <string>Oloturia</string>
    </property>
   </action>
  </widget>
