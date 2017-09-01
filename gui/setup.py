@@ -12,26 +12,24 @@ from os import getcwd
 from pathlib import Path
 
 APP = ['main.py']
-APP_NAME = "QAbsorb"
-DATA_FILES = [('../models', glob('../models/*'))]
+APP_NAME = "MsMsSpectralAnalysis"
 OPTIONS = {'argv_emulation': True,
            'bdist_base': str(Path(getcwd()).parent) + '/build',
            'dist_dir': str(Path(getcwd()).parent) +'/dist',
-           'iconfile': 'icons/qabsorb.icns',
+           'iconfile': '../icons/MsMsSpectralAnalysis.icns',
            'plist': {
                'CFBundleName': APP_NAME,
                'CFBundleDisplayName': APP_NAME,
-               'CFBundleGetInfoString': "Predict passive gastrointestinal permeability",
-               'CFBundleIdentifier': "com.metaunige.osx.qabsorb",
+               'CFBundleGetInfoString': "Analyse, Edit, Modify and Compare your Ms/MS spectra",
+               'CFBundleIdentifier': "com.metaunige.osx.msmsspectralanalysis",
                'CFBundleVersion': "0.1.0",
                'CFBundleShortVersionString': "0.1.0",
-               'NSHumanReadableCopyright': u"Copyright © 2017, Giuseppe Marco Randazzo, All Rights Reserved"
+               'NSHumanReadableCopyright': u"Copyright 2017, Giuseppe Marco Randazzo, All Rights Reserved"
             }
           }
 
 setup(
     app=APP,
-    data_files=DATA_FILES,
     options={'py2app': OPTIONS},
     setup_requires=['py2app'],
 )
