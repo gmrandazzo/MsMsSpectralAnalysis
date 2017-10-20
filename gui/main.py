@@ -199,30 +199,33 @@ class MainWindow(QtWidgets.QMainWindow, mw.Ui_MainWindow):
 
     def edit(self):
         indx = self.listView.currentIndex().row()
-        idialog = CompoundSpectraDialog()
-        idialog.setdata(self.compoundlst[indx].name, self.compoundlst[indx].smiles, self.compoundlst[indx].precmz, self.compoundlst[indx].prectype, self.compoundlst[indx].ionmode,  self.compoundlst[indx].tr, self.compoundlst[indx].inst, self.compoundlst[indx].insttype,  self.compoundlst[indx].collenergy,  self.compoundlst[indx].biosource, self.compoundlst[indx].links, self.compoundlst[indx].spectra.totxt())
-        if idialog.exec_() == 1:
-            [name, smiles, precmz, prectype, ionmode, tr, inst, insttype, collenergy, biosource, links, txtspectra] = idialog.getdata()
-            spectra = MSMSspectra()
-            for line in txtspectra:
-                a = nsplit(line.strip())
-                if len(a) == 2:
-                    spectra.mass.append(float(a[0].replace(",", ".")))
-                    spectra.intensity.append(float(a[1].replace(",", ".")))
-            spectra.sortMZ()
-            #update fields
-            self.compoundlst[indx].name = name
-            self.compoundlst[indx].smiles = smiles
-            self.compoundlst[indx].precmz = precmz
-            self.compoundlst[indx].prectype = prectype
-            self.compoundlst[indx].inst = inst
-            self.compoundlst[indx].insttype = insttype
-            self.compoundlst[indx].collenergy = collenergy
-            self.compoundlst[indx].spectra = spectra
-            self.compoundlst[indx].tr = tr
-            self.compoundlst[indx].ionmode = ionmode
-            self.compoundlst[indx].biosource = biosource
-            self.compoundlst[indx].links = links
+        if indx >= 0 and indx < len(self.compoundlst):
+            idialog = CompoundSpectraDialog()
+            idialog.setdata(self.compoundlst[indx].name, self.compoundlst[indx].smiles, self.compoundlst[indx].precmz, self.compoundlst[indx].prectype, self.compoundlst[indx].ionmode,  self.compoundlst[indx].tr, self.compoundlst[indx].inst, self.compoundlst[indx].insttype,  self.compoundlst[indx].collenergy,  self.compoundlst[indx].biosource, self.compoundlst[indx].links, self.compoundlst[indx].spectra.totxt())
+            if idialog.exec_() == 1:
+                [name, smiles, precmz, prectype, ionmode, tr, inst, insttype, collenergy, biosource, links, txtspectra] = idialog.getdata()
+                spectra = MSMSspectra()
+                for line in txtspectra:
+                    a = nsplit(line.strip())
+                    if len(a) == 2:
+                        spectra.mass.append(float(a[0].replace(",", ".")))
+                        spectra.intensity.append(float(a[1].replace(",", ".")))
+                spectra.sortMZ()
+                #update fields
+                self.compoundlst[indx].name = name
+                self.compoundlst[indx].smiles = smiles
+                self.compoundlst[indx].precmz = precmz
+                self.compoundlst[indx].prectype = prectype
+                self.compoundlst[indx].inst = inst
+                self.compoundlst[indx].insttype = insttype
+                self.compoundlst[indx].collenergy = collenergy
+                self.compoundlst[indx].spectra = spectra
+                self.compoundlst[indx].tr = tr
+                self.compoundlst[indx].ionmode = ionmode
+                self.compoundlst[indx].biosource = biosource
+                self.compoundlst[indx].links = links
+        else:
+            return
 
     def remove(self):
         indx = self.listView.currentIndex().row()
@@ -249,27 +252,30 @@ class MainWindow(QtWidgets.QMainWindow, mw.Ui_MainWindow):
         ax.plot(data, '*-')
         self.canvas.draw()
         '''
-        mol = self.compoundlst[current.row()]
-        ax = self.figure.add_subplot(111)
-        ax.clear()
-        if mol.spectra.signal_size() > 0:
-            #width = 1.50  # the width of the bars
-            #print("%s %d %f %f" % (mol.name, mol.spectra.signal_size(), mol.spectra.getMZIntensityMax(), mol.spectra.getIntensityMax()))
-            width = 2*pow(mol.spectra.getIntensityMax(), -0.05)
-            rects1 = ax.bar(mol.spectra.mass, mol.spectra.intensity, width, color='r')
-            ax.set_ylabel('intensity')
-            #ax.legend( (rects1[0], rects2[0], rects3[0]), ('y', 'z', 'k') )
+        if current.row() >= 0 and current.row() < len(self.compoundlst):
+            mol = self.compoundlst[current.row()]
+            ax = self.figure.add_subplot(111)
+            ax.clear()
+            if mol.spectra.signal_size() > 0:
+                #width = 1.50  # the width of the bars
+                #print("%s %d %f %f" % (mol.name, mol.spectra.signal_size(), mol.spectra.getMZIntensityMax(), mol.spectra.getIntensityMax()))
+                width = 2*pow(mol.spectra.getIntensityMax(), -0.05)
+                rects1 = ax.bar(mol.spectra.mass, mol.spectra.intensity, width, color='r')
+                ax.set_ylabel('intensity')
+                #ax.legend( (rects1[0], rects2[0], rects3[0]), ('y', 'z', 'k') )
 
-            def autolabel(rects):
-                for rect in rects:
-                    h = rect.get_height()
-                    ax.text(rect.get_x()+rect.get_width()/2., 1.05*h, '%d'%int(h),
-                            ha='center', va='bottom')
+                def autolabel(rects):
+                    for rect in rects:
+                        h = rect.get_height()
+                        ax.text(rect.get_x()+rect.get_width()/2., 1.05*h, '%d'%int(h),
+                                ha='center', va='bottom')
 
-            #autolabel(rects1)
-            #autolabel(rects2)
-            self.canvas.draw()
-            self.updateTableView(current.row())
+                #autolabel(rects1)
+                #autolabel(rects2)
+                self.canvas.draw()
+                self.updateTableView(current.row())
+        else:
+            return
 
     def updateTableView(self, indx):
         del self.tablemodel.arraydata[:]

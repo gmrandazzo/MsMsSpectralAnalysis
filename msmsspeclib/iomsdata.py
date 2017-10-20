@@ -244,7 +244,7 @@ def readMSP(fname):
                 getspectra = True
             else:
                 if getspectra == True:
-                    a = nsplit(line.strip(), "\t")
+                    a = nsplit(line.strip())
                     if len(a) == 2:
                         spectra.mass.append(float(a[0].replace(",",".")))
                         spectra.intensity.append(float(a[1].replace(",",".")))
