@@ -23,13 +23,28 @@ class Compound(object):
         self.biosource = biosource
 
     def debug(self):
-        print("Name: %s" % (self.name))
-        print("SMILES: %s" % (self.smiles))
-        print("INCHIKEY: %s" % (self.inchiKey))
-        print("Precursor m/z: %s" % (self.precmz))
-        print("Retention time: %s" % (self.tr))
-        print("Precursor type: %s" % (self.prectype))
-        print("Collision energy: %s" % (self.collenergy))
+        if self.name != None:
+            print("Name: %s" % (self.name))
+        if self.smiles != None:
+            print("SMILES: %s" % (self.smiles))
+        if self.inst != None:
+            print("Instrument: %s" % (self.inst))
+        if self.insttype != None:
+            print("Instrument Type: %s" % (self.insttype))
+        if self.ionmode != None:
+            print("Ion mode: %s" % (self.ionmode))
+        if self.precmz != None:
+            print("Precursor m/z: %s" % (self.precmz))
+        if self.prectype != None:
+            print("Precursor Type: %s" % (self.prectype))
+        if self.tr != None:
+            print("Retention time: %s" % (self.tr))
+        if self.collenergy != None:
+            print("Collision energy: %s" % (self.collenergy))
+        if self.links != None:
+            print("Links: %s" % (self.links))
+        if self.biosource != None:
+            print("Biological source: %s" % (self.biosource))
         print("Spectra:")
         self.spectra.debug()
 
@@ -67,11 +82,17 @@ class MSMSspectra(object):
 
     def getMZIntensityMax(self):
         """ get the maximum intensity """
-        return self.mass[self.intensity.index(max(self.intensity))]
+        if len(self.intensity) > 0:
+            return self.mass[self.intensity.index(max(self.intensity))]
+        else:
+            return 0.
 
     def getIntensityMax(self):
         """ get the maximum intensity """
-        return float(max(self.intensity))
+        if len(self.intensity) > 0:
+            return float(max(self.intensity))
+        else:
+            return 0.
 
     def signal_size(self):
         """ return the size of the ms/ms spectra """
@@ -236,8 +257,6 @@ def readMSP(fname):
                 tr = nsplit(line.strip(), ":")[-1].strip()
             elif "ionmode" in line.lower():
                 ionmode = nsplit(line.strip(), ":")[-1].strip()
-            elif "ionmode" in line.lower():
-                ionmode = nsplit(line.strip(), ":")[-1].strip()
             elif "links" in line.lower():
                 links = nsplit(line.strip(), ":")[-1].strip()
             elif "num peaks" in line.lower():
@@ -325,8 +344,6 @@ def readMGF(fname):
                     collenergy = a[-1].strip()
                 elif "retentiontime" == a[0].lower().strip():
                     tr = a[-1].strip()
-                elif "ionmode" == a[0].lower().strip():
-                    ionmode = a[-1].strip()
                 elif "ionmode" == a[0].lower().strip():
                     ionmode = a[-1].strip()
                 elif "links" == a[0].lower().strip():

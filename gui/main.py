@@ -119,6 +119,9 @@ class MainWindow(QtWidgets.QMainWindow, mw.Ui_MainWindow):
             else:
                 return
 
+            if Path(fname).is_file():
+                os.remove(fname)
+
             for i in range(len(self.compoundlst)):
                 m = self.compoundlst[i]
                 writefnc(fname, m)
@@ -212,6 +215,7 @@ class MainWindow(QtWidgets.QMainWindow, mw.Ui_MainWindow):
                         spectra.intensity.append(float(a[1].replace(",", ".")))
                 spectra.sortMZ()
                 #update fields
+                self.lstdatamodel.setItem(indx, 0, QStandardItem(name))
                 self.compoundlst[indx].name = name
                 self.compoundlst[indx].smiles = smiles
                 self.compoundlst[indx].precmz = precmz
